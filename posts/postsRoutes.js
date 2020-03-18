@@ -107,7 +107,7 @@ router.delete('/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    const {id} = req.params;
+    const id = req.params.id;
     const post = req.body;
 
     if(!id)
@@ -117,13 +117,15 @@ router.put('/:id', (req, res) => {
     else
         db
             .findById(id)
-            .then(post => {
-                if(post.length === 0)
+            .then(newpost => {
+                if(newpost.length === 0)
                     res.status(404).json({ error: "The post with the specified ID does not exist."})
                 else
                     db
                         .update(id, post)
-                        .then(count => res.status(200).json(count))
+                        .then(count => {
+                            res.status(200).json(count);
+                        })
                         .catch(() => res.status(500).json({ error: "The post information could not be modified" }));
             })
             .catch(() => res.status(500).json({ error: "The post information could not be retrieved" }));
